@@ -1,6 +1,6 @@
 (
 Instr(\leaStrings2,
-	{|freq= 440, det = 5, cutoff=11000, res=0.1, oscCount = 10|
+	{|freq= 440, det = 5, cutoff=11000, res=0.1, oscCount = 3|
 		// dummy env is addressing the issue of fading echo at end, it
 		// adds two seconds
 		var dummyEnv = EnvGen.ar(Env.new([1,0], [10]), doneAction: 2);
@@ -43,11 +43,12 @@ Instr(\leaStrings2,
 		ControlSpec(0, 20, \lin, 0.1, 5), // detune
 		ControlSpec(200, 22000, \exp, 1, 11000), // cutoff
 		ControlSpec(0.0001, 1, \lin, 0.01, 0.1), // res
-		//ControlSpec(1,20, \lin, 1, 6) // osccount
+		// ControlSpec(1,20, \lin, 1, 6) // osccount
 		ObjectSpec(5)
 	]
 ); // end Instr
 )
 
 Patch(\leaStrings2).gui
+Server.local.makeGui
 
