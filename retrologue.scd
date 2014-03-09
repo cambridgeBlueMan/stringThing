@@ -20,7 +20,7 @@ SynthDef(\retrologue,
 
 		Out.ar(0, sig*0.1);
 	}
-).add
+).play
 )
 
 

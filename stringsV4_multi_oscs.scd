@@ -16,36 +16,20 @@ BBandPass.ar(freq: bw:)
 
 
 
-(
-Instr(\retrologue2,
-	{|freq = 440, res = 0.3, cutoff = 7000|
-		var cents = 5;
-		var envAmp = EnvGen.ar(Env.new([0,1,1,0], [2,4,2], \squared), doneAction: 2);
-		var freqs = [
-			freq*2.pow(cents/1200.neg),
-			freq*2.pow(cents*0.6/1200.neg),
-			freq*2.pow(cents*0.3/1200.neg),
-			freq,
-			freq*2.pow(cents*0.6/1200),
-			freq*2.pow(cents*0.3/1200),
-			freq*2.pow(cents/1200)
-		];
-		var pans = [-1, -0.66, -0.3 ,0, 0.3, 0.66, 1];
-		var sig = Mix.ar(
-			Pan2.ar(VarSaw.ar(freqs, width: (SinOsc.ar([0.1, 0.2, 0.3]).range(0.4, 0.6))), pans)
-		);
-		BLowPass4.ar(sig, freq: cutoff, rq:0.5)*envAmp*0.1
-	},
-	[
-		ControlSpec(20, 2000, \exp, 1, 440), // freq
-		ControlSpec(0.001, 1, \lin, 0.001, 0.3), // res
-		ControlSpec(200, 10000, \exp, 1, 7000)
-
-	]
-).play
 
 )
 
+(
+Instr(\chorus2, { arg bus, numInChan, numOutChan, numDelays, predelay, speed, depth, ph_diff;
+	var in, sig, mods;
+	in = In.ar(bus, numInChan);
+	mods = { |i|
+		SinOsc.kr(speed * rrand(0.9, 1.1), ph_diff * i, depth, predelay);
+	} ! (numDelays * numOutChan);
+	sig = DelayL.ar(in, 0.5, mods);
+	Mix(sig.clump(numOutChan))
+}, [\audiobus, ObjectSpec(1), ObjectSpec(1), ObjectSpec(1), #[0.0001, 0.2, \exponential, 0, 0.001], #[0.001, 10, \exponential], #[0.0001, 0.25, \exponential], #[0, 2pi], #[0, 1]]);
+)
 p = Patch(Instr.at(\retrologue2)).gui
 
 (
@@ -55,12 +39,34 @@ CmdPeriod.add({m.free});
 )
 
 s.makeGui
+// bathroom
+
+~bathroom = ([\roomsize, 5, \revtime, 0.6, \damping, 0.62, \inputbw, 0.48, \drylevel -6, \earlylevel, -11, \taillevel, -13]);
+
+//living room
+a = Synth(\test, [\roomsize, 16, \revtime, 1.24, \damping, 0.10, \inputbw, 0.95, \drylevel -3, \earlylevel, -15, \taillevel, -17]);
+
+//church
+~church = ([roomsize: 80, revtime: 4.85, damping: 0.41, inputbw: 0.19, drylevel: -3, earlylevel: -9, taillevel: -11]);
+
+// cathedral
+a = Synth(\test, [\roomsize, 243, \revtime, 1, \damping, 0.1, \inputbw, 0.34, \drylevel -3, \earlylevel, -11, \taillevel, -9]);
+a.free
+
+// canyon
+a = Synth(\test, [\roomsize, 300, \revtime, 103, \damping, 0.43, \inputbw, 0.51, \drylevel -5, \earlylevel, -26, \taillevel, -20]);
+a.free;
 
 (
-x = Instr(\retrologue2) <>> Instr(\chorus2);
-x.gui
-
+x = Instr(\retrologue2) <>> Instr("gVerb");
+//x.gui
+y = Patch(x, (roomsize: 80, revtime: 4.85, damping: 0.41, inputbw: 0.19, drylevel: -3, earlylevel: -9, taillevel: -11));
+y.gui
 )
+
+
+
+
 (
 Instr(\retrologue3,
 {|freq = 440, res = 0.3, cutoff = 7000, numOscs=7, cents=5, widthLow=0.4, widthHigh=0.6

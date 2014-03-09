@@ -1,7 +1,7 @@
 (
 // **************************
 // true pulse code modulation
-{|freq = 440, cutoff = 1000, res = 0.3|
+{|freq = 55, cutoff = 1000, res = 0.3|
 	var sig = Mix.ar([
 		Pulse.ar(freq+1, LFNoise1.ar(0.2)),
 		Pulse.ar(freq, (SinOsc.ar(0.1).range(0.1, 0.9)))
@@ -12,9 +12,10 @@
 )
 
 
+// this one !!!!!!!!!!!!!!!!!!!!!!!
 (
 
-{|freq = 440, cutoff = 1000, res = 0.3|
+{|freq = 220, cutoff = 1000, res = 0.3|
 	var sig =
 	Mix.ar([
 		Pulse.ar(freq, LFTri.ar(0.015)),
@@ -25,10 +26,11 @@ sig = DFM1.ar(sig, cutoff, res: res);
 
 )
 
+// and this one !!!!!!!!!!!!!!!!!!!
 (
 // *****************************
 // VarSaw duty cycle modulation
-{|freq = 440, cutoff=1000, res = 0.3|
+{|freq = 220, cutoff=1000, res = 0.3|
 	var sig = Mix.ar([
 		VarSaw.ar(freq+1, LFNoise1.ar(0.2)),
 		VarSaw.ar(freq, width: (SinOsc.ar(0.1).range(0.1, 0.9)))
@@ -42,7 +44,7 @@ sig = DFM1.ar(sig, cutoff, res: res);
 (
 // *************************
 // the following simuates it
-{|freq = 440, cutoff = 3000, res = 0.1, detune = 0.06, lfoFreq = 60|
+{|freq = 110, cutoff = 3000, res = 0.1, detune = 0.06, lfoFreq = 60|
 	var sig = Mix.ar(
 		[
 			//
